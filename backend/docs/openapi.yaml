@@ -1,0 +1,37 @@
+openapi: 3.0.3
+info:
+  title: Car Rental Management System API
+  version: 1.0.0
+  description: OpenAPI specification for the production-ready rental platform.
+paths:
+  /api/health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: System health status
+  /api/auth/login:
+    post:
+      summary: User login
+      responses:
+        '200':
+          description: JWT token response
+  /api/auth/register:
+    post:
+      summary: User registration
+      responses:
+        '200':
+          description: Registration response
+  /api/vehicles:
+    get:
+      summary: List vehicles
+      responses:
+        '200':
+          description: Vehicle list
+  /api/bookings:
+    get:
+      summary: List bookings
+      responses:
+        '200':
+          description: Booking list
+components: {}
