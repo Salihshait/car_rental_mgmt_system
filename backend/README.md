@@ -20,3 +20,13 @@ This repository contains a production-oriented baseline for a Car Rental Managem
 ## Notes
 
 The initial scaffold is production-minded and ready for extension with authentication, booking logic, payment integration, alerts, and deployments.
+
+## Database connection
+
+The API always connects via Npgsql (PostgreSQL/Supabase), regardless of environment. Set the connection string via the `SUPABASE_DB_CONNECTION` environment variable (or `ConnectionStrings__DefaultConnection`) in Npgsql keyword format — not a `postgresql://` URI:
+
+```
+Host=<project>.supabase.co;Port=5432;Username=postgres;Password=<password>;Database=postgres;SSL Mode=Require;Trust Server Certificate=true
+```
+
+Apply `backend/sql/supabase/001_schema.sql` and `002_seed.sql` to the target database before first use. Never commit a real connection string to `appsettings*.json`.
