@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
 
 Log.Logger = new LoggerConfiguration()
@@ -21,8 +23,11 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? Environment.GetEnvironmentVariable("SUPABASE_DB_CONNECTION");
+
 builder.Services.AddDbContext<CarRentDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -31,21 +36,41 @@ builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IInsuranceService, InsuranceService>();
 builder.Services.AddScoped<DashboardService>();
 
 var jwtKey = Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"] ?? "super-secret-key-please-change-me");
+var supabaseAuthority = builder.Configuration["Supabase:Authority"]
+    ?? Environment.GetEnvironmentVariable("SUPABASE_AUTHORITY")
+    ?? "https://zjudixjgsyeglevlzrgp.supabase.co/auth/v1";
+var supabaseAudience = builder.Configuration["Supabase:Audience"]
+    ?? Environment.GetEnvironmentVariable("SUPABASE_AUDIENCE")
+    ?? "authenticated";
+var supabaseJwksUrl = builder.Configuration["Supabase:JwksUrl"]
+    ?? Environment.GetEnvironmentVariable("SUPABASE_JWKS_URL")
+    ?? "https://zjudixjgsyeglevlzrgp.supabase.co/auth/v1/.well-known/jwks.json";
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.Authority = supabaseAuthority;
+        options.Audience = supabaseAudience;
+        options.RequireHttpsMetadata = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-            ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(jwtKey)
+            ValidIssuer = supabaseAuthority,
+            ValidAudience = supabaseAudience,
+            IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
+            {
+                using var httpClient = new HttpClient();
+                var jwksJson = httpClient.GetStringAsync(supabaseJwksUrl).GetAwaiter().GetResult();
+                var jwks = new JsonWebKeySet(jwksJson);
+                return jwks.Keys.Where(key => string.Equals(key.Kid, kid, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
         };
     });
 

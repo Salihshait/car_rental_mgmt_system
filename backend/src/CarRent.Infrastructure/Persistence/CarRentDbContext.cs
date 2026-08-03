@@ -15,6 +15,7 @@ public class CarRentDbContext : DbContext
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<Booking> Bookings => Set<Booking>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<Insurance> Insurances => Set<Insurance>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

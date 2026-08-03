@@ -1,18 +1,30 @@
 import { useState } from 'react';
-import { Box, Button, Card, CardContent, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../services/api';
 
 export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const result = await login({ email, password });
-      setMessage(result.message ?? 'Login handshake prepared.');
+
+      if (result?.accessToken) {
+        localStorage.setItem('accessToken', result.accessToken);
+      }
+
+      if (result?.refreshToken) {
+        localStorage.setItem('refreshToken', result.refreshToken);
+      }
+
+      setMessage(result.message ?? 'Login successful.');
+      navigate('/dashboard');
     } catch (error) {
-      setMessage('Unable to reach the API gateway.');
+      setMessage(error.message ?? 'Unable to reach the API gateway.');
     }
   };
 
