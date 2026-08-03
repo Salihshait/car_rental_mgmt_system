@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import DashboardPage from './pages/DashboardPage';
 import AuthPage from './pages/AuthPage';
@@ -12,6 +12,7 @@ export default function App() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/booking" element={<BookingPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Box>
   );
