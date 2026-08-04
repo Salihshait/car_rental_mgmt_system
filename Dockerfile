@@ -16,4 +16,5 @@ RUN dotnet publish "CarRent.Api.csproj" -c Release -o /app/publish /p:UseAppHost
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
+ENV DOTNET_hostBuilder__reloadConfigOnChange=false
 ENTRYPOINT ["dotnet", "CarRent.Api.dll"]
