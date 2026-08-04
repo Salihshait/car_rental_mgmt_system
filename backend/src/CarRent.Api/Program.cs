@@ -74,6 +74,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+var allowedOrigins = (builder.Configuration["Cors:AllowedOrigins"]
+        ?? Environment.GetEnvironmentVariable("CORS_ALLOWED_ORIGINS")
+        ?? "http://localhost:5173")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -94,6 +107,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
