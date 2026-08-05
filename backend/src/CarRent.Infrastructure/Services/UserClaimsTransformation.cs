@@ -16,7 +16,7 @@ public class UserClaimsTransformation : IClaimsTransformation
 
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
-        if (principal.Identity?.IsAuthenticated != true || principal.HasClaim(c => c.Type == ClaimTypes.Role))
+        if (principal.Identity?.IsAuthenticated != true || principal.HasClaim(c => c.Type == "app_user_id"))
         {
             return principal;
         }
