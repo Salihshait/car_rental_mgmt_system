@@ -84,7 +84,11 @@ var allowedOrigins = (builder.Configuration["Cors:AllowedOrigins"]
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
-        policy.WithOrigins(allowedOrigins)
+        policy.SetIsOriginAllowed(origin =>
+                  allowedOrigins.Contains(origin) ||
+                  (Uri.TryCreate(origin, UriKind.Absolute, out var originUri) &&
+                   originUri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase) &&
+                   originUri.Host.StartsWith("car-rental-mgmt-system", StringComparison.OrdinalIgnoreCase)))
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
