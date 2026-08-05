@@ -18,9 +18,9 @@ public class BookingsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] Guid? customerId, CancellationToken cancellationToken)
     {
-        var bookings = await _bookingService.GetAllAsync(cancellationToken);
+        var bookings = await _bookingService.GetAllAsync(customerId, cancellationToken);
         return Ok(bookings);
     }
 

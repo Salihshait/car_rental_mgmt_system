@@ -15,10 +15,16 @@ public class BookingService : IBookingService
         _context = context;
     }
 
-    public async Task<IEnumerable<BookingSummaryDto>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<BookingSummaryDto>> GetAllAsync(Guid? customerId = null, CancellationToken cancellationToken = default)
     {
-        return await _context.Bookings
-            .AsNoTracking()
+        var query = _context.Bookings.AsNoTracking();
+
+        if (customerId.HasValue)
+        {
+            query = query.Where(b => b.CustomerId == customerId);
+        }
+
+        return await query
             .Select(b => new BookingSummaryDto
             {
                 Id = b.Id,
