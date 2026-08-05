@@ -26,7 +26,7 @@ public class CustomerService : ICustomerService
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                PhoneNumber = u.PhoneNumber,
+                PhoneNumber = u.PhoneNumber ?? string.Empty,
                 IsActive = u.IsActive
             })
             .ToListAsync(cancellationToken);
@@ -43,7 +43,7 @@ public class CustomerService : ICustomerService
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                PhoneNumber = u.PhoneNumber,
+                PhoneNumber = u.PhoneNumber ?? string.Empty,
                 IsActive = u.IsActive
             })
             .FirstOrDefaultAsync(cancellationToken);
@@ -77,7 +77,7 @@ public class CustomerService : ICustomerService
             FirstName = customer.FirstName,
             LastName = customer.LastName,
             Email = customer.Email,
-            PhoneNumber = customer.PhoneNumber,
+            PhoneNumber = customer.PhoneNumber ?? string.Empty,
             IsActive = customer.IsActive
         };
     }
