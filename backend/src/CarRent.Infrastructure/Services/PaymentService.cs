@@ -73,6 +73,13 @@ public class PaymentService : IPaymentService
         };
 
         await _context.Payments.AddAsync(payment, cancellationToken);
+
+        var invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.BookingId == request.BookingId, cancellationToken);
+        if (invoice is not null)
+        {
+            invoice.Status = "Paid";
+        }
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return new PaymentSummaryDto

@@ -1,4 +1,5 @@
-import { Box, Card, CardContent, Grid, Typography, Stack } from '@mui/material';
+import { Box, Button, Card, CardContent, Grid, Typography, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const stats = [
   { label: 'Revenue', value: '$1.2M' },
@@ -8,10 +9,18 @@ const stats = [
 ];
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ p: 4 }}>
       <Stack spacing={3}>
-        <Typography variant="h4" fontWeight={700}>Dashboard</Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography variant="h4" fontWeight={700}>Dashboard</Typography>
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" onClick={() => navigate('/booking')}>Bookings</Button>
+            <Button variant="outlined" onClick={() => navigate('/invoices')}>Billing</Button>
+          </Stack>
+        </Stack>
         <Grid container spacing={2}>
           {stats.map((item) => (
             <Grid item xs={12} sm={6} md={3} key={item.label}>

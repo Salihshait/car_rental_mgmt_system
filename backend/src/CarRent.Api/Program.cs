@@ -36,6 +36,7 @@ builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IInsuranceService, InsuranceService>();
 builder.Services.AddScoped<DashboardService>();
 
