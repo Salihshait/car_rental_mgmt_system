@@ -31,6 +31,20 @@ public class InvoicesController : ControllerBase
         return invoice is null ? NotFound() : Ok(invoice);
     }
 
+    [HttpGet("{id:guid}/pdf")]
+    public async Task<IActionResult> GetPdf(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var pdfBytes = await _invoiceService.GeneratePdfAsync(id, cancellationToken);
+            return File(pdfBytes, "application/pdf", $"invoice-{id}.pdf");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
     [HttpPost("generate")]
     public async Task<IActionResult> Generate([FromBody] CreateInvoiceRequest request, CancellationToken cancellationToken)
     {

@@ -18,6 +18,8 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs/car-rent-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
@@ -45,6 +47,43 @@ builder.Services.AddScoped<IVehicleCatalogService, VehicleCatalogService>();
 builder.Services.AddScoped<IVehicleDocumentService, VehicleDocumentService>();
 builder.Services.AddScoped<ICustomerDocumentService, CustomerDocumentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
+builder.Services.AddScoped<IPricingService, PricingService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IWaitlistService, WaitlistService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<IEmailService, LoggingEmailService>();
+builder.Services.AddScoped<ISmsService, LoggingSmsService>();
+builder.Services.AddScoped<IBookingNotificationService, BookingNotificationService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
+builder.Services.AddScoped<IRentalAgreementPdfService, RentalAgreementPdfService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
+builder.Services.AddScoped<IVehicleMaintenanceService, VehicleMaintenanceService>();
+builder.Services.AddScoped<IFuelLogService, FuelLogService>();
+builder.Services.AddScoped<IFleetTrackingService, FleetTrackingService>();
+builder.Services.AddScoped<IDriverAssignmentService, DriverAssignmentService>();
+builder.Services.AddScoped<IVehicleTransferService, VehicleTransferService>();
+builder.Services.AddScoped<IFleetService, FleetService>();
+builder.Services.AddScoped<IDriverDocumentService, DriverDocumentService>();
+builder.Services.AddScoped<IDriverAttendanceService, DriverAttendanceService>();
+builder.Services.AddScoped<IDriverSalaryService, DriverSalaryService>();
+builder.Services.AddScoped<IDriverRatingService, DriverRatingService>();
+builder.Services.AddScoped<IVendorService, VendorService>();
+builder.Services.AddScoped<IWorkshopService, WorkshopService>();
+builder.Services.AddScoped<ISparePartService, SparePartService>();
+builder.Services.AddScoped<IVehicleWarrantyService, VehicleWarrantyService>();
+builder.Services.AddScoped<IAmcContractService, AmcContractService>();
+builder.Services.AddScoped<IVehicleInspectionService, VehicleInspectionService>();
+builder.Services.AddScoped<IMaintenanceExpenseService, MaintenanceExpenseService>();
+builder.Services.AddScoped<IMaintenanceReportService, MaintenanceReportService>();
+builder.Services.AddScoped<IPaymentGatewayProvider, RazorpayGatewayProvider>();
+builder.Services.AddScoped<IPaymentGatewayProvider, StripeGatewayProvider>();
+builder.Services.AddScoped<IPaymentGatewayProvider, CashGatewayProvider>();
+builder.Services.AddScoped<IPaymentGatewayProvider, UpiGatewayProvider>();
+builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
+builder.Services.AddScoped<IRefundService, RefundService>();
+builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+builder.Services.AddScoped<IBillingReportService, BillingReportService>();
 builder.Services.AddScoped<IClaimsTransformation, UserClaimsTransformation>();
 builder.Services.AddHttpClient<ISupabaseAdminClient, SupabaseAdminClient>();
 builder.Services.AddScoped<DashboardService>();

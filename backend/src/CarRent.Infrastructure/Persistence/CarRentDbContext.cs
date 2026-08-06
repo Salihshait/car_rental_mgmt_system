@@ -29,6 +29,35 @@ public class CarRentDbContext : DbContext
     public DbSet<CustomerDocument> CustomerDocuments => Set<CustomerDocument>();
     public DbSet<FavoriteVehicle> FavoriteVehicles => Set<FavoriteVehicle>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<Coupon> Coupons => Set<Coupon>();
+    public DbSet<CouponRedemption> CouponRedemptions => Set<CouponRedemption>();
+    public DbSet<BookingExtension> BookingExtensions => Set<BookingExtension>();
+    public DbSet<WaitlistEntry> WaitlistEntries => Set<WaitlistEntry>();
+    public DbSet<Setting> Settings => Set<Setting>();
+    public DbSet<Rental> Rentals => Set<Rental>();
+    public DbSet<RentalDamage> RentalDamages => Set<RentalDamage>();
+    public DbSet<RentalPhoto> RentalPhotos => Set<RentalPhoto>();
+    public DbSet<RentalCharge> RentalCharges => Set<RentalCharge>();
+    public DbSet<Refund> Refunds => Set<Refund>();
+    public DbSet<Driver> Drivers => Set<Driver>();
+    public DbSet<VehicleMaintenance> VehicleMaintenances => Set<VehicleMaintenance>();
+    public DbSet<FuelLog> FuelLogs => Set<FuelLog>();
+    public DbSet<VehicleLocation> VehicleLocations => Set<VehicleLocation>();
+    public DbSet<Trip> Trips => Set<Trip>();
+    public DbSet<DriverAssignment> DriverAssignments => Set<DriverAssignment>();
+    public DbSet<VehicleTransfer> VehicleTransfers => Set<VehicleTransfer>();
+    public DbSet<DriverDocument> DriverDocuments => Set<DriverDocument>();
+    public DbSet<DriverAttendance> DriverAttendances => Set<DriverAttendance>();
+    public DbSet<DriverSalaryPayment> DriverSalaryPayments => Set<DriverSalaryPayment>();
+    public DbSet<DriverRating> DriverRatings => Set<DriverRating>();
+    public DbSet<Vendor> Vendors => Set<Vendor>();
+    public DbSet<Workshop> Workshops => Set<Workshop>();
+    public DbSet<SparePart> SpareParts => Set<SparePart>();
+    public DbSet<MaintenancePartUsage> MaintenancePartUsages => Set<MaintenancePartUsage>();
+    public DbSet<VehicleWarranty> VehicleWarranties => Set<VehicleWarranty>();
+    public DbSet<AmcContract> AmcContracts => Set<AmcContract>();
+    public DbSet<VehicleInspection> VehicleInspections => Set<VehicleInspection>();
+    public DbSet<MaintenanceExpense> MaintenanceExpenses => Set<MaintenanceExpense>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -105,6 +134,234 @@ public class CarRentDbContext : DbContext
 
         modelBuilder.Entity<FavoriteVehicle>()
             .HasKey(f => new { f.CustomerId, f.VehicleId });
+
+        modelBuilder.Entity<Coupon>()
+            .HasIndex(c => c.Code)
+            .IsUnique();
+
+        modelBuilder.Entity<Setting>()
+            .HasIndex(s => s.KeyName)
+            .IsUnique();
+
+        modelBuilder.Entity<Booking>()
+            .HasOne<Coupon>()
+            .WithMany()
+            .HasForeignKey(b => b.CouponId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<CouponRedemption>()
+            .HasOne<Coupon>()
+            .WithMany()
+            .HasForeignKey(r => r.CouponId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<CouponRedemption>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(r => r.BookingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BookingExtension>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(e => e.BookingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Rental>()
+            .HasIndex(r => r.BookingId)
+            .IsUnique();
+
+        modelBuilder.Entity<Rental>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(r => r.BookingId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RentalDamage>()
+            .HasOne<Rental>()
+            .WithMany()
+            .HasForeignKey(d => d.RentalId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RentalPhoto>()
+            .HasOne<Rental>()
+            .WithMany()
+            .HasForeignKey(p => p.RentalId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RentalCharge>()
+            .HasOne<Rental>()
+            .WithMany()
+            .HasForeignKey(c => c.RentalId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Refund>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(r => r.BookingId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Refund>()
+            .HasOne<Payment>()
+            .WithMany()
+            .HasForeignKey(r => r.PaymentId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Payment>()
+            .HasOne<Invoice>()
+            .WithMany()
+            .HasForeignKey(p => p.InvoiceId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Driver>()
+            .HasIndex(d => d.UserId)
+            .IsUnique();
+
+        modelBuilder.Entity<Driver>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(d => d.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<VehicleMaintenance>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(m => m.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FuelLog>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(f => f.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<VehicleLocation>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(l => l.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<VehicleLocation>()
+            .HasOne<Trip>()
+            .WithMany()
+            .HasForeignKey(l => l.TripId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Trip>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(t => t.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Trip>()
+            .HasOne<Driver>()
+            .WithMany()
+            .HasForeignKey(t => t.DriverId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<DriverAssignment>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(a => a.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DriverAssignment>()
+            .HasOne<Driver>()
+            .WithMany()
+            .HasForeignKey(a => a.DriverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<VehicleTransfer>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(t => t.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DriverDocument>()
+            .HasOne<Driver>()
+            .WithMany()
+            .HasForeignKey(d => d.DriverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DriverAttendance>()
+            .HasOne<Driver>()
+            .WithMany()
+            .HasForeignKey(a => a.DriverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DriverAttendance>()
+            .HasIndex(a => new { a.DriverId, a.AttendanceDate })
+            .IsUnique();
+
+        modelBuilder.Entity<DriverSalaryPayment>()
+            .HasOne<Driver>()
+            .WithMany()
+            .HasForeignKey(s => s.DriverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DriverRating>()
+            .HasOne<Driver>()
+            .WithMany()
+            .HasForeignKey(r => r.DriverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SparePart>()
+            .HasIndex(p => p.PartNumber)
+            .IsUnique();
+
+        modelBuilder.Entity<Workshop>()
+            .HasOne<Vendor>()
+            .WithMany()
+            .HasForeignKey(w => w.VendorId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<VehicleMaintenance>()
+            .HasOne<Workshop>()
+            .WithMany()
+            .HasForeignKey(m => m.WorkshopId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<MaintenancePartUsage>()
+            .HasOne<VehicleMaintenance>()
+            .WithMany()
+            .HasForeignKey(u => u.MaintenanceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MaintenancePartUsage>()
+            .HasOne<SparePart>()
+            .WithMany()
+            .HasForeignKey(u => u.SparePartId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<VehicleWarranty>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(w => w.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AmcContract>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(c => c.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AmcContract>()
+            .HasOne<Vendor>()
+            .WithMany()
+            .HasForeignKey(c => c.VendorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<VehicleInspection>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(i => i.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MaintenanceExpense>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(e => e.VehicleId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         base.OnModelCreating(modelBuilder);
     }

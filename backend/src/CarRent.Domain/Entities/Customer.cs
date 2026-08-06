@@ -13,6 +13,8 @@ public class Customer
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactPhone { get; set; }
     public string? EmergencyContactRelation { get; set; }
+    public string? Gstin { get; set; }
+    public string? BillingState { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public User User { get; set; } = default!;

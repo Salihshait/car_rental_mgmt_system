@@ -1,5 +1,6 @@
 using CarRent.Application.DTOs.Notifications;
 using CarRent.Application.Interfaces;
+using CarRent.Domain.Entities;
 using CarRent.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +39,19 @@ public class NotificationService : INotificationService
             ?? throw new InvalidOperationException("Notification not found.");
 
         notification.IsRead = true;
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task CreateAsync(Guid userId, string notificationType, string message, CancellationToken cancellationToken = default)
+    {
+        await _context.Notifications.AddAsync(new Notification
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            NotificationType = notificationType,
+            Message = message
+        }, cancellationToken);
+
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -14,10 +14,12 @@ public class VehiclesController : ControllerBase
     private const string AdminRoles = "Super Admin,Company Admin,Branch Manager";
 
     private readonly IVehicleService _vehicleService;
+    private readonly IAvailabilityService _availabilityService;
 
-    public VehiclesController(IVehicleService vehicleService)
+    public VehiclesController(IVehicleService vehicleService, IAvailabilityService availabilityService)
     {
         _vehicleService = vehicleService;
+        _availabilityService = availabilityService;
     }
 
     private Guid? CurrentUserId
@@ -96,6 +98,28 @@ public class VehiclesController : ControllerBase
     [HttpGet("{id:guid}/timeline")]
     public async Task<IActionResult> GetTimeline(Guid id, CancellationToken cancellationToken) =>
         Ok(await _vehicleService.GetTimelineAsync(id, cancellationToken));
+
+    [HttpGet("availability")]
+    public async Task<IActionResult> GetAvailabilityCalendar(
+        [FromQuery] Guid? branchId,
+        [FromQuery] Guid? categoryId,
+        [FromQuery] DateTime from,
+        [FromQuery] DateTime to,
+        CancellationToken cancellationToken) =>
+        Ok(await _availabilityService.GetAvailabilityCalendarAsync(branchId, categoryId, from, to, cancellationToken));
+
+    [HttpGet("{id:guid}/availability")]
+    public async Task<IActionResult> GetVehicleAvailability(Guid id, [FromQuery] DateTime from, [FromQuery] DateTime to, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Ok(await _availabilityService.GetVehicleAvailabilityAsync(id, from, to, cancellationToken));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 
     [HttpPost]
     [Authorize(Roles = AdminRoles)]

@@ -14,6 +14,7 @@ public class Vehicle
     public decimal DailyRate { get; set; }
     public string Status { get; set; } = "Available";
     public string? GpsDeviceId { get; set; }
+    public int? CurrentOdometerReading { get; set; }
     public Guid? BrandId { get; set; }
     public Guid? ModelId { get; set; }
     public Guid BranchId { get; set; }

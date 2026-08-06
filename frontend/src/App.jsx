@@ -19,6 +19,16 @@ import CustomersListPage from './pages/CustomersListPage';
 import CustomerDetailsPage from './pages/CustomerDetailsPage';
 import CustomerPortalPage from './pages/CustomerPortalPage';
 import NotificationsPage from './pages/NotificationsPage';
+import FleetDashboardPage from './pages/FleetDashboardPage';
+import LiveMapPage from './pages/LiveMapPage';
+import TripHistoryPage from './pages/TripHistoryPage';
+import FuelMonitoringPage from './pages/FuelMonitoringPage';
+import MaintenanceSchedulePage from './pages/MaintenanceSchedulePage';
+import VehicleTransfersPage from './pages/VehicleTransfersPage';
+import DriverAssignmentsPage from './pages/DriverAssignmentsPage';
+import DriversListPage from './pages/DriversListPage';
+import DriverDetailsPage from './pages/DriverDetailsPage';
+import DriverAppDashboardPage from './pages/DriverAppDashboardPage';
 import AppShell from './components/AppShell';
 import RequireAuth from './components/RequireAuth';
 
@@ -48,6 +58,16 @@ export default function App() {
         <Route path="/customers/:id" element={<CustomerDetailsPage />} />
         <Route path="/my-account" element={<CustomerPortalPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/fleet/dashboard" element={<FleetDashboardPage />} />
+        <Route path="/fleet/live-map" element={<LiveMapPage />} />
+        <Route path="/fleet/trips" element={<TripHistoryPage />} />
+        <Route path="/fleet/fuel" element={<FuelMonitoringPage />} />
+        <Route path="/fleet/maintenance" element={<MaintenanceSchedulePage />} />
+        <Route path="/fleet/transfers" element={<VehicleTransfersPage />} />
+        <Route path="/fleet/drivers" element={<DriverAssignmentsPage />} />
+        <Route path="/drivers" element={<DriversListPage />} />
+        <Route path="/drivers/:id" element={<DriverDetailsPage />} />
+        <Route path="/driver-app" element={<DriverAppDashboardPage />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/login" replace />} />

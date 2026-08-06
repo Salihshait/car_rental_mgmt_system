@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using CarRent.Application.DTOs.Bookings;
 using CarRent.Application.DTOs.Customers;
 using CarRent.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -70,7 +71,7 @@ public class CustomersController : ControllerBase
 
     [HttpGet("me/bookings")]
     public async Task<IActionResult> GetMyBookings(CancellationToken cancellationToken) =>
-        Ok(await _bookingService.GetAllAsync(CurrentUserId, cancellationToken));
+        Ok(await _bookingService.GetAllAsync(new BookingFilter { CustomerId = CurrentUserId }, CurrentUserId, isAdmin: false, cancellationToken));
 
     [HttpGet("me/favorites")]
     public async Task<IActionResult> GetMyFavorites(CancellationToken cancellationToken) =>
@@ -108,7 +109,7 @@ public class CustomersController : ControllerBase
     [HttpGet("{id:guid}/bookings")]
     [Authorize(Roles = AdminRoles)]
     public async Task<IActionResult> GetBookings(Guid id, CancellationToken cancellationToken) =>
-        Ok(await _bookingService.GetAllAsync(id, cancellationToken));
+        Ok(await _bookingService.GetAllAsync(new BookingFilter { CustomerId = id }, CurrentUserId, isAdmin: true, cancellationToken));
 
     [HttpGet("{id:guid}/timeline")]
     [Authorize(Roles = AdminRoles)]

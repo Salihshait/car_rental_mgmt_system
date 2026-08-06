@@ -189,3 +189,87 @@ export const deleteCustomerDocument = (customerId, documentId) =>
 // Notifications
 export const listMyNotifications = () => request('/notifications/me');
 export const markNotificationRead = (id) => request(`/notifications/${id}/read`, { method: 'PATCH' });
+
+// Fleet: drivers
+export const listDrivers = () => request('/drivers');
+export const getDriver = (id) => request(`/drivers/${id}`);
+export const createDriver = (payload) => request('/drivers', { method: 'POST', body: payload });
+export const updateDriver = (id, payload) => request(`/drivers/${id}`, { method: 'PUT', body: payload });
+export const getDriverDashboard = () => request('/drivers/dashboard');
+export const getDriverPerformance = (id) => request(`/drivers/${id}/performance`);
+
+// Driver: self-service ("Driver App Dashboard")
+export const getMyDriverProfile = () => request('/drivers/me');
+export const updateMyDriverProfile = (payload) => request('/drivers/me', { method: 'PUT', body: payload });
+export const getMyDriverAssignment = () => request('/drivers/me/assignment');
+export const getMyDriverTrips = () => request('/drivers/me/trips');
+export const getMyDriverAttendance = (filters = {}) => request(`/drivers/me/attendance${buildQuery(filters)}`);
+export const checkInDriver = () => request('/drivers/me/attendance/check-in', { method: 'POST' });
+export const checkOutDriver = () => request('/drivers/me/attendance/check-out', { method: 'POST' });
+export const getMyDriverSalary = () => request('/drivers/me/salary');
+export const getMyDriverRatings = () => request('/drivers/me/ratings');
+export const getMyDriverPerformance = () => request('/drivers/me/performance');
+
+// Driver documents (works for both admin and self, pass the relevant driverId)
+export const listDriverDocuments = (driverId) => request(`/drivers/${driverId}/documents`);
+export const uploadDriverDocument = (driverId, { documentType, documentNumber, expiryDate, file }) => {
+  const form = new FormData();
+  form.append('documentType', documentType);
+  if (documentNumber) form.append('documentNumber', documentNumber);
+  if (expiryDate) form.append('expiryDate', expiryDate);
+  if (file) form.append('file', file);
+  return request(`/drivers/${driverId}/documents`, { method: 'POST', body: form, isForm: true });
+};
+export const verifyDriverDocument = (driverId, documentId, verificationStatus) =>
+  request(`/drivers/${driverId}/documents/${documentId}/verify`, { method: 'PATCH', body: { verificationStatus } });
+export const deleteDriverDocument = (driverId, documentId) =>
+  request(`/drivers/${driverId}/documents/${documentId}`, { method: 'DELETE' });
+
+// Driver attendance (admin)
+export const getDriverAttendance = (driverId, filters = {}) => request(`/driver-attendance/${driverId}${buildQuery(filters)}`);
+export const markDriverAttendance = (driverId, payload) => request(`/driver-attendance/${driverId}/mark`, { method: 'POST', body: payload });
+
+// Driver salary
+export const listDriverSalary = (driverId) => request(`/driver-salary${buildQuery({ driverId })}`);
+export const generateDriverSalary = (payload) => request('/driver-salary', { method: 'POST', body: payload });
+export const markDriverSalaryPaid = (id) => request(`/driver-salary/${id}/mark-paid`, { method: 'POST' });
+
+// Driver ratings
+export const listDriverRatings = (driverId) => request(`/driver-ratings${buildQuery({ driverId })}`);
+export const addDriverRating = (payload) => request('/driver-ratings', { method: 'POST', body: payload });
+
+// Fleet: dashboard / availability
+export const getFleetDashboardSummary = () => request('/fleet/dashboard');
+export const getFleetAvailability = () => request('/fleet/availability');
+
+// Fleet: GPS tracking / live map / trips
+export const recordVehicleLocation = (payload) => request('/fleet/tracking/locations', { method: 'POST', body: payload });
+export const getLatestVehicleLocations = () => request('/fleet/tracking/locations/latest');
+export const startTrip = (payload) => request('/fleet/tracking/trips/start', { method: 'POST', body: payload });
+export const endTrip = (tripId, payload = {}) => request(`/fleet/tracking/trips/${tripId}/end`, { method: 'POST', body: payload });
+export const listTrips = (filters = {}) => request(`/fleet/tracking/trips${buildQuery(filters)}`);
+export const getTripLocations = (tripId) => request(`/fleet/tracking/trips/${tripId}/locations`);
+export const simulateTrip = (vehicleId) => request(`/fleet/tracking/vehicles/${vehicleId}/simulate`, { method: 'POST' });
+
+// Fleet: fuel monitoring
+export const listFuelLogs = (vehicleId) => request(`/fuel-logs${buildQuery({ vehicleId })}`);
+export const createFuelLog = (payload) => request('/fuel-logs', { method: 'POST', body: payload });
+export const getFuelConsumptionSummary = (vehicleId) => request(`/fuel-logs/vehicles/${vehicleId}/summary`);
+
+// Fleet: maintenance schedule
+export const listMaintenance = (filters = {}) => request(`/vehicle-maintenance${buildQuery(filters)}`);
+export const scheduleMaintenance = (payload) => request('/vehicle-maintenance', { method: 'POST', body: payload });
+export const startMaintenance = (id) => request(`/vehicle-maintenance/${id}/start`, { method: 'POST' });
+export const completeMaintenance = (id, payload = {}) => request(`/vehicle-maintenance/${id}/complete`, { method: 'POST', body: payload });
+export const cancelMaintenance = (id) => request(`/vehicle-maintenance/${id}/cancel`, { method: 'POST' });
+
+// Fleet: driver assignments
+export const listDriverAssignments = (filters = {}) => request(`/driver-assignments${buildQuery(filters)}`);
+export const assignDriver = (payload) => request('/driver-assignments', { method: 'POST', body: payload });
+export const unassignDriver = (id) => request(`/driver-assignments/${id}/unassign`, { method: 'POST' });
+
+// Fleet: vehicle transfers
+export const listVehicleTransfers = (filters = {}) => request(`/vehicle-transfers${buildQuery(filters)}`);
+export const createVehicleTransfer = (payload) => request('/vehicle-transfers', { method: 'POST', body: payload });
+export const completeVehicleTransfer = (id) => request(`/vehicle-transfers/${id}/complete`, { method: 'POST' });
+export const cancelVehicleTransfer = (id) => request(`/vehicle-transfers/${id}/cancel`, { method: 'POST' });

@@ -14,6 +14,15 @@ const navItems = [
   { label: 'Permissions', to: '/permissions' },
   { label: 'My Account', to: '/my-account' },
   { label: 'Notifications', to: '/notifications' },
+  { label: 'Fleet Dashboard', to: '/fleet/dashboard' },
+  { label: 'Live Map', to: '/fleet/live-map' },
+  { label: 'Trip History', to: '/fleet/trips' },
+  { label: 'Fuel Monitoring', to: '/fleet/fuel' },
+  { label: 'Maintenance', to: '/fleet/maintenance' },
+  { label: 'Transfers', to: '/fleet/transfers' },
+  { label: 'Drivers', to: '/fleet/drivers' },
+  { label: 'Driver Roster', to: '/drivers' },
+  { label: 'Driver App', to: '/driver-app' },
   { label: 'Profile', to: '/profile' },
 ];
 
