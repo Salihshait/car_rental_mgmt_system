@@ -1,6 +1,7 @@
 import { AppBar, Box, Button, Stack, Toolbar, Typography } from '@mui/material';
 import { Outlet, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
+import ChatbotWidget from './ChatbotWidget';
 
 const navItems = [
   { label: 'Dashboard', to: '/dashboard' },
@@ -23,6 +24,12 @@ const navItems = [
   { label: 'Drivers', to: '/fleet/drivers' },
   { label: 'Driver Roster', to: '/drivers' },
   { label: 'Driver App', to: '/driver-app' },
+  { label: 'Reports', to: '/reports' },
+  { label: 'CRM', to: '/crm' },
+  { label: 'My Tickets', to: '/my-tickets' },
+  { label: 'Finance', to: '/finance' },
+  { label: 'SaaS', to: '/saas' },
+  { label: 'AI', to: '/ai' },
   { label: 'Profile', to: '/profile' },
 ];
 
@@ -50,6 +57,7 @@ export default function AppShell() {
         </Toolbar>
       </AppBar>
       <Outlet />
+      <ChatbotWidget />
     </Box>
   );
 }

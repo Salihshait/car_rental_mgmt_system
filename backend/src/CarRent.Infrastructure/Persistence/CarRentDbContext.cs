@@ -58,6 +58,33 @@ public class CarRentDbContext : DbContext
     public DbSet<AmcContract> AmcContracts => Set<AmcContract>();
     public DbSet<VehicleInspection> VehicleInspections => Set<VehicleInspection>();
     public DbSet<MaintenanceExpense> MaintenanceExpenses => Set<MaintenanceExpense>();
+    public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
+    public DbSet<SupportTicketMessage> SupportTicketMessages => Set<SupportTicketMessage>();
+    public DbSet<Complaint> Complaints => Set<Complaint>();
+    public DbSet<Feedback> FeedbackEntries => Set<Feedback>();
+    public DbSet<MessageTemplate> MessageTemplates => Set<MessageTemplate>();
+    public DbSet<Campaign> Campaigns => Set<Campaign>();
+    public DbSet<MessageLog> MessageLogs => Set<MessageLog>();
+    public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
+    public DbSet<BankTransaction> BankTransactions => Set<BankTransaction>();
+    public DbSet<JournalEntry> JournalEntries => Set<JournalEntry>();
+    public DbSet<Tenant> Tenants => Set<Tenant>();
+    public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
+    public DbSet<PlanLimit> PlanLimits => Set<PlanLimit>();
+    public DbSet<PlanFeature> PlanFeatures => Set<PlanFeature>();
+    public DbSet<TenantFeatureOverride> TenantFeatureOverrides => Set<TenantFeatureOverride>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<SubscriptionInvoice> SubscriptionInvoices => Set<SubscriptionInvoice>();
+    public DbSet<TenantUsageMetric> TenantUsageMetrics => Set<TenantUsageMetric>();
+    public DbSet<TenantBranding> TenantBrandings => Set<TenantBranding>();
+    public DbSet<TenantDomain> TenantDomains => Set<TenantDomain>();
+    public DbSet<FraudAlert> FraudAlerts => Set<FraudAlert>();
+    public DbSet<MaintenancePrediction> MaintenancePredictions => Set<MaintenancePrediction>();
+    public DbSet<DamageDetectionResult> DamageDetectionResults => Set<DamageDetectionResult>();
+    public DbSet<DocumentOcrResult> DocumentOcrResults => Set<DocumentOcrResult>();
+    public DbSet<ChatSession> ChatSessions => Set<ChatSession>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+    public DbSet<VoiceBookingRequest> VoiceBookingRequests => Set<VoiceBookingRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -362,6 +389,176 @@ public class CarRentDbContext : DbContext
             .WithMany()
             .HasForeignKey(e => e.VehicleId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<SupportTicket>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(t => t.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<SupportTicket>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(t => t.BookingId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<SupportTicketMessage>()
+            .HasOne<SupportTicket>()
+            .WithMany()
+            .HasForeignKey(m => m.TicketId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Complaint>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(c => c.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Complaint>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(c => c.BookingId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Complaint>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(c => c.VehicleId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Feedback>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(f => f.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Feedback>()
+            .HasOne<Booking>()
+            .WithMany()
+            .HasForeignKey(f => f.BookingId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Campaign>()
+            .HasOne<MessageTemplate>()
+            .WithMany()
+            .HasForeignKey(c => c.TemplateId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MessageLog>()
+            .HasOne<MessageTemplate>()
+            .WithMany()
+            .HasForeignKey(l => l.TemplateId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<MessageLog>()
+            .HasOne<Campaign>()
+            .WithMany()
+            .HasForeignKey(l => l.CampaignId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<BankAccount>()
+            .HasOne<Branch>()
+            .WithMany()
+            .HasForeignKey(a => a.BranchId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<BankTransaction>()
+            .HasOne<BankAccount>()
+            .WithMany()
+            .HasForeignKey(t => t.BankAccountId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<JournalEntry>()
+            .HasOne<BankAccount>()
+            .WithMany()
+            .HasForeignKey(j => j.BankAccountId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Tenant>()
+            .HasIndex(t => t.Slug)
+            .IsUnique();
+
+        modelBuilder.Entity<PlanLimit>()
+            .HasOne<SubscriptionPlan>()
+            .WithMany()
+            .HasForeignKey(l => l.PlanId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PlanFeature>()
+            .HasOne<SubscriptionPlan>()
+            .WithMany()
+            .HasForeignKey(f => f.PlanId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TenantFeatureOverride>()
+            .HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(o => o.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Subscription>()
+            .HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(s => s.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Subscription>()
+            .HasOne<SubscriptionPlan>()
+            .WithMany()
+            .HasForeignKey(s => s.PlanId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<SubscriptionInvoice>()
+            .HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(i => i.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SubscriptionInvoice>()
+            .HasOne<Subscription>()
+            .WithMany()
+            .HasForeignKey(i => i.SubscriptionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<TenantUsageMetric>()
+            .HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(m => m.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TenantBranding>()
+            .HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(b => b.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TenantBranding>()
+            .HasIndex(b => b.TenantId)
+            .IsUnique();
+
+        modelBuilder.Entity<TenantDomain>()
+            .HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(d => d.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MaintenancePrediction>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(p => p.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DamageDetectionResult>()
+            .HasOne<Vehicle>()
+            .WithMany()
+            .HasForeignKey(d => d.VehicleId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<ChatMessage>()
+            .HasOne<ChatSession>()
+            .WithMany()
+            .HasForeignKey(m => m.SessionId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }
