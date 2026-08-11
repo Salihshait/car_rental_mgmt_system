@@ -34,6 +34,13 @@ builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? Environment.GetEnvironmentVariable("SUPABASE_DB_CONNECTION");
 
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "No database connection string configured. Set ConnectionStrings:DefaultConnection " +
+        "or the SUPABASE_DB_CONNECTION environment variable.");
+}
+
 builder.Services.AddDbContext<CarRentDbContext>(options =>
     options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
 
