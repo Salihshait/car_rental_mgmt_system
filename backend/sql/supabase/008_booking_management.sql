@@ -94,11 +94,23 @@ on conflict (key_name) do nothing;
 -- ranges on the same vehicle, even under concurrent requests.
 create extension if not exists btree_gist;
 
+-- timestamptz::date is only STABLE (its result depends on the session's
+-- TimeZone setting), and Postgres requires IMMUTABLE expressions in an
+-- index/exclusion constraint. Pin the cast to a fixed zone so it's
+-- deterministic and usable in the GiST index below.
+create or replace function public.immutable_utc_date(ts timestamptz)
+returns date
+language sql
+immutable
+as $$
+    select (ts at time zone 'UTC')::date
+$$;
+
 alter table public.bookings
     add constraint bookings_no_overlap
     exclude using gist (
         vehicle_id with =,
-        daterange(start_date::date, end_date::date, '[)') with &&
+        daterange(public.immutable_utc_date(start_date), public.immutable_utc_date(end_date), '[)') with &&
     ) where (status not in ('Cancelled', 'Rejected', 'NoShow'));
 
 create index if not exists idx_bookings_branch_id on public.bookings(branch_id);
