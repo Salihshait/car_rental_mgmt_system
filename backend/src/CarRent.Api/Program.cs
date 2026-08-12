@@ -208,6 +208,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Force redeploy: ensure this exception handler (added in bf6e817) is actually live on Render.
 app.Use(async (context, next) =>
 {
     try
