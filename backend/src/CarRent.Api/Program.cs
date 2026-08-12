@@ -208,6 +208,25 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, "Unhandled exception processing {Method} {Path}", context.Request.Method, context.Request.Path);
+
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { message = $"An unexpected error occurred: {ex.Message}" });
+        }
+    }
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
