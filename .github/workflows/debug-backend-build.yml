@@ -5,5 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build backend Docker image (same as Render)
-        run: docker build -f backend/Dockerfile -t debug-backend backend
+      - name: Build backend Docker image under a Render-like 512MB memory limit
+        run: docker build --memory=512m --memory-swap=512m -f backend/Dockerfile -t debug-backend backend

@@ -8,10 +8,10 @@ COPY ["src/CarRent.Api/CarRent.Api.csproj", "src/CarRent.Api/"]
 COPY ["src/CarRent.Application/CarRent.Application.csproj", "src/CarRent.Application/"]
 COPY ["src/CarRent.Domain/CarRent.Domain.csproj", "src/CarRent.Domain/"]
 COPY ["src/CarRent.Infrastructure/CarRent.Infrastructure.csproj", "src/CarRent.Infrastructure/"]
-RUN dotnet restore "src/CarRent.Api/CarRent.Api.csproj"
+RUN dotnet restore "src/CarRent.Api/CarRent.Api.csproj" --disable-parallel
 COPY . .
 WORKDIR "/src/src/CarRent.Api"
-RUN dotnet publish "CarRent.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "CarRent.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false -maxcpucount:1 -p:UseSharedCompilation=false
 
 FROM base AS final
 WORKDIR /app
